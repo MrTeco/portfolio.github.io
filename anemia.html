@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Rolz' Portfolio Website</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous">
+        
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,900|Source+Sans+Pro:300,900&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <header>
+            <a href="index.html#anemia" class="btn" style="margin-left: 1em; margin-top: 1em;">Return</a>
+        </header>
+
+        <section id="anemia">
+            <h2 class="section__title section__title--about">Anemia code examples</h2>
+            <br>
+            <div class="about-me__body">
+                <br>
+
+
+                <h3>
+                    The LOS system
+                </h3>
+                <p>LOS stands for line of sight / fog of war, I made it tile-based which means that for each tile around you you either fully see it or you dont:</p>
+                <img style="max-width: 35%;" src="img/los.gif" alt="">
+                <p>First, I got a perimiter of tile positions around the player by using 2 for loops. After that, I use my line-drawing-algorithm to "raycast" to those positions, this is the function:</p>
+                <img style="max-width: 45%;" src="img/bresenham.PNG" alt="">
+                <p>I am using a line drawing function because it is designed to work with pixels, and thats appropriate for a tile-based system.
+                    The Bresenham line drawing algorithm is similar to the DDA line drawing algorithm but the difference is that this one only uses ints which makes it faster.</p>
+                <p>Here, BWalls and BVisible are a type I made for storing positions efficiently, its basically just a 2d array of bools. It looks like this:</p>
+                <img style="max-width: 30%;" src="img/boolset.PNG" alt="">
+                <p>After that I use a particle system to spawn 1x1 squares at every non-visible position, and clear them at the start of the next frame. Unity allows for multithreading in some cases, so I made the raycasting part async to get this all to run faster.</p>
+            
+            
+                <br>
+                <br>
+                <h3>
+                    Sprite collider generation
+                </h3>
+                <p>So that I dont have to manually draw every items collider to fit its texture/sprite, I made a script that gets all of the pixels positions and creates a path for a polygon collider.</p>
+                <p>First, I read the sprite like this:</p>
+                <img style="max-width: 50%;" src="img/pixelpos.PNG" alt="">
+                <p>Next I remove all of the "inside" pixels, only leaving the border/outline of the sprite, by checking the list for any elements at neighboring positions.</p>
+                <img style="max-width: 35%;" src="img/borderpixels.PNG" alt="">
+                <p>A pixels position is its bottom left corner, but I need all of its corners for this, so I get those and switch to using a new list from now on.</p>
+                <img style="max-width: 30%;" src="img/allpixelcorners.PNG" alt="">
+                <p>
+                    Next I made a function that does a lot of comparisons to figure out the "path" from the first corner to the last corner that will be used for the collider. This functions starts at the first pixel and then continues to any available corner that is not blocked by other pixels, it also creates an "ignore" list so it doesnt visit any previously visited pixels. This is re-called until it returns the last corner and can't go any further.
+                </p>
+                <img style="max-width: 75%;" src="img/getnexttrace.PNG" alt="">
+                <p>Thats it, the only issue with this system is that it doesnt work where sprites have 1 pixel width diagonal lines (doesnt check for diagonal walls like that)</p>
+                <p>The generated path is given to a Unity polygon collider</p>
+
+                <br>
+                <br>
+                <h3>
+                    More examples work in progress
+                </h3>
+            </div>
+            <img class="about-me__img" src="" alt="">
+        </section>
+    </body>
+</html>
